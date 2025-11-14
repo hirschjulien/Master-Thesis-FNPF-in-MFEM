@@ -40,5 +40,5 @@ int main()
       if (attr) { mesh.GetBdrElement(be)->SetAttribute(attr); }
    }
 
-   mesh.Save("/Users/hirsch/mfem/mfem-4.8/thesis/wave-tank.mesh");
+   mesh.Save("wave-tank.mesh");
 }
