@@ -2,3 +2,7 @@
 *.out
 *.exe
 *.txt
+
+PF_linear
+laplace_solver
+laplace_convergence
