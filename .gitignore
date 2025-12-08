@@ -6,5 +6,6 @@
 
 PF_linear
 laplace_solver
+laplace_solver_p
 laplace_convergence
 wave_tank
