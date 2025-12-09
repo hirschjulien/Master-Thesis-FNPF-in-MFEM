@@ -212,7 +212,7 @@ int main(){
         a.FormLinearSystem(ess_tdof, phi, b, A, X, B);
 
         GSSmoother M(A);
-        PCG(A, M, B, X, 0, 400, 1e-12, 0.0);
+        PCG(A, M, B, X, 0, 400, 1e-24, 0.0);
         a.RecoverFEMSolution(X, b, phi);
 
     // socketstream vol1("localhost", 19916);
@@ -288,7 +288,7 @@ int main(){
 
         
         // GSSmoother M(A);
-        PCG(A, M, B_step, X_step, 0, 400, 1e-12, 0.0);
+        PCG(A, M, B_step, X_step, 0, 400, 1e-24, 0.0);
         a.RecoverFEMSolution(X_step, b, phi);
 
         vol1 << "solution\n" << mesh << phi << flush;

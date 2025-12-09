@@ -6,8 +6,8 @@ using namespace std;
 using namespace mfem;
 
 int main (){
-    int order = 6;
-    int ref_levels = 0; // 16 Elements
+    int order = 4;
+    int ref_levels = 2; // 0 --> 16 Elements
 
     const char *mesh_file = "../Meshes/wave-tank.mesh";
 
@@ -108,15 +108,15 @@ int main (){
 
     // Minimal solver
     GSSmoother M(A);
-    PCG(A, M, B, X, 0, 400, 1e-12, 0.0);
+    PCG(A, M, B, X, 0, 500, 1e-24, 0.0);
     a.RecoverFEMSolution(X, b, phi);
 
     // Transfer trace of phi onto the free-surface submesh
     // GridFunction phi_fs(&fespace_fs);
     // SubMesh::CreateTransferMap(phi, phi_fs).Transfer(phi, phi_fs);
     
-    socketstream vol("localhost", 19916);
-    vol << "solution\n" << mesh << phi << "window_title 'Initial phi without time stepping'\nkeys mm" << flush;
+    // socketstream vol("localhost", 19916);
+    // vol << "solution\n" << mesh << phi << "window_title 'Initial phi without time stepping'\nkeys mm" << flush;
     // socketstream surf("localhost", 19916);
     // surf << "solution\n" << mesh_fs << phi_fs << "window_title 'Free surface trace'\nkeys mm" << std::flush;
 
@@ -128,7 +128,7 @@ int main (){
 
     FunctionCoefficient w_analytical([&](const Vector& X){
         double z_rel    = X(2) - zmax;
-        return -H * U * 0.5 * k * (cosh(k*(z_rel+h)) / sinh(k*h)) * cos(omega*t - k*(kx_dir * X(0) + ky_dir * X(1)));
+        return -H * U * 0.5 * k * (sinh(k*(z_rel+h)) / sinh(k*h)) * sin(omega*t - k*(kx_dir * X(0) + ky_dir * X(1)));
     });
 
     double l2_w = w.ComputeL2Error(w_analytical);

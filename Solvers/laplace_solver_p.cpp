@@ -182,7 +182,7 @@ int main (int argc, char *argv[])
 
     // FunctionCoefficient w_analytical([&](const Vector& X){
     //     double z_rel    = X(2) - zmax;
-    //     return -H * U * 0.5 * k * (cosh(k*(z_rel+h)) / sinh(k*h)) * cos(omega*t - k*(kx_dir * X(0) + ky_dir * X(1)));
+    //     return -H * U * 0.5 * k * (sinh(k*(z_rel+h)) / sinh(k*h)) * sin(omega*t - k*(kx_dir * X(0) + ky_dir * X(1)));
     // });
 
     // double l2_w = w.ComputeL2Error(w_analytical);
