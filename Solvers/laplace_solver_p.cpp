@@ -12,11 +12,7 @@ int main (int argc, char *argv[])
     int num_procs = Mpi::WorldSize();       // Total number of MPI ranks
     int myid = Mpi::WorldRank();            // This rank's id
 
-    // ------ P-CONVERGENCE LOOP ------
-    int max_order = 11;
-    for(int j=1; j < max_order; j++){
-
-    int order = j;
+    int order = 4;
     int ref_levels = 0;
     int par_ref_levels = 0;
 
@@ -151,7 +147,22 @@ int main (int argc, char *argv[])
     
     a.RecoverFEMSolution(X, b, phi); // Recover parallel FE solution phi from X
 
+        // ----- PARAVIEW -----
+    // {
+    // ParaViewDataCollection *pd = NULL;
+    // pd = new ParaViewDataCollection("Laplace_parallel", &mesh_parallel);
+    // pd->SetPrefixPath("ParaView");
+    // pd->RegisterField("solution", &phi);
+    // pd->SetLevelsOfDetail(order);
+    // pd->SetDataFormat(VTKFormat::BINARY);
+    // pd->SetHighOrderOutput(true);
+    // pd->SetCycle(0);
+    // pd->SetTime(0.0);
+    // pd->Save();
+    // delete pd;
+    // }
 
+    // ----- GLVIS -----
     socketstream vol;
     vol.open("localhost", 19916);
     vol << "parallel " << num_procs << " " << myid << "\n"; // tell GLVis we're in parallel
@@ -161,16 +172,26 @@ int main (int argc, char *argv[])
 
 
     double l2 = phi.ComputeL2Error(phi_exact);
-    if(myid == 0)   // Only print error for one rank
-    {
-    cout << "p=" << order << " " << l2 << endl;
-    }
+    cout << "L2 Error: " << l2 << endl;
 
+    //     // ------ GET w AND COMPARE TO ANLYTICAL SOLUTION -------
+    // GridFunction w(&fespace);   // w on parent mesh
+    // phi.GetDerivative(1, 2, w); // Derivative in z direction for whole parent mesh
+    // GridFunction w_tilde(&fespace_fs); // w_tilde on Submesh
+    // mesh_fs.Transfer(w, w_tilde);   // Transfer the vertical derivative 
+
+    // FunctionCoefficient w_analytical([&](const Vector& X){
+    //     double z_rel    = X(2) - zmax;
+    //     return -H * U * 0.5 * k * (cosh(k*(z_rel+h)) / sinh(k*h)) * cos(omega*t - k*(kx_dir * X(0) + ky_dir * X(1)));
+    // });
+
+    // double l2_w = w.ComputeL2Error(w_analytical);
+    // cout << l2_w << endl;
 
     delete fec_fs;
     delete fec;
     delete prec;
-}
+
 return 0;
 }
 
